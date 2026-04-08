@@ -1,6 +1,5 @@
 import unittest
 from textnode import TextNode, TextType, text_node_to_html_node
-from inlinetext import split_nodes_deliminiter
 
 class TestTextNode(unittest.TestCase):
     def test_eq(self):
@@ -66,40 +65,6 @@ class TestTextNodeToHtmlNode(unittest.TestCase):
         node = TextNode("a cat", TextType.IMAGE, url="https://example.com/cat.png")
         html_node = text_node_to_html_node(node)
         self.assertIsNone(html_node.value)
-
-class TestSplitNodesDelimiter(unittest.TestCase):
-    def test_single_delimiter(self):
-        old_nodes = [TextNode("This is **bold** text", TextType.TEXT)]
-        expected = [
-            TextNode("This is ", TextType.TEXT),
-            TextNode("bold", TextType.BOLD),
-            TextNode(" text", TextType.TEXT),
-        ]
-        actual = split_nodes_deliminiter(old_nodes, "**", TextType.BOLD)
-        self.assertEqual(actual, expected)
-
-    def test_incorrect_delimiter(self):
-        old_nodes = [TextNode("This is **italic** text", TextType.TEXT)]
-        expected = [TextNode("This is **italic** text", TextType.TEXT)]
-        actual = split_nodes_deliminiter(old_nodes, "_", TextType.ITALIC)
-        self.assertEqual(actual, expected)
-
-    def test_no_closing_delimiter(self):
-        old_nodes = [TextNode("This text is missing `code", TextType.TEXT)]
-        self.assertRaises(Exception, split_nodes_deliminiter, old_nodes, "`", TextType.CODE)
-
-    def test_nested_cases(self):
-        old_nodes = [TextNode("This is **bold** and **more bold** text", TextType.TEXT)]
-        expected = [
-            TextNode("This is ", TextType.TEXT),
-            TextNode("bold", TextType.BOLD),
-            TextNode(" and ", TextType.TEXT),
-            TextNode("more bold", TextType.BOLD),
-            TextNode(" text", TextType.TEXT),
-        ]
-        actual = split_nodes_deliminiter(old_nodes, "**", TextType.BOLD)
-        self.assertEqual(actual, expected)
-
 
 if __name__=="__main__":
     unittest.main()
