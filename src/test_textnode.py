@@ -64,7 +64,7 @@ class TestTextNodeToHtmlNode(unittest.TestCase):
         # img nodes have no text value — to_html() should raise since LeafNode requires a value
         node = TextNode("a cat", TextType.IMAGE, url="https://example.com/cat.png")
         html_node = text_node_to_html_node(node)
-        self.assertIsNone(html_node.value)
+        self.assertEqual(html_node.value, '')
 
 if __name__=="__main__":
     unittest.main()

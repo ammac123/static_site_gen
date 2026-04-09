@@ -1,9 +1,12 @@
 import re
 from enum import Enum
-from typing import List, Optional
-from htmlnode import LeafNode, ParentNode, HTMLNode
+from typing import List
+from htmlnode import ParentNode, HTMLNode
 from textnode import TextNode, TextType, text_node_to_html_node
 from inlinetext import text_to_textnodes
+import logging, os
+logger = logging.getLogger()
+logger.setLevel(os.environ.get("LOGLEVEL", "INFO").upper())
 
 class BlockType(Enum):
     PARAGRAPH = 'paragraph'
@@ -94,7 +97,7 @@ def block_to_block_type(block: str):
         return BlockType.CODE
     
     if all((
-            re.match(r'^>.+', line)
+            re.match(r'^>', line)
             for line in block.splitlines()
             )):
         return BlockType.QUOTE
@@ -130,3 +133,10 @@ def markdown_to_html_node(markdown: str) -> ParentNode:
     for block in markdown_blocks:
         html_blocks.append(text_to_children(block))
     return ParentNode("div", html_blocks)
+
+def extract_title(markdown: str):
+    heading_pattern = r'^#\s(.*$)'
+    matches = re.findall(heading_pattern, markdown, re.MULTILINE)
+    if not matches:
+        raise ValueError("Error: No title heading found in markdown")
+    return matches[0].strip()

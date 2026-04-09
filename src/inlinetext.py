@@ -73,12 +73,12 @@ def text_to_textnodes(text: str):
     return nodes
 
 def extract_markdown_images(text):
-    pattern = r'!\[(.*?)\]\((.*?:\/\/.*?)\)'
+    pattern = r'!\[(.*?)\]\((.*?)\)'
     matches = re.findall(pattern, text)
     return matches
 
 
 def extract_markdown_links(text):
-    pattern = r'(?<!!)\[(.*?)\]\((.*?:\/\/.*?)\)'
+    pattern = r'(?<!!)\[(.*?)\]\((.*?)\)'
     matches = re.findall(pattern, text)
     return matches

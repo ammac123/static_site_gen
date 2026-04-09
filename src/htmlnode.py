@@ -38,15 +38,15 @@ class LeafNode(HTMLNode):
         super().__init__(tag, value, None, props)
     
     def to_html(self):
-        if not self.value:
+        if self.value is None:
             raise ValueError("All leafnodes must have a value")
-        if not self.tag:
+        if self.tag is None:
             return str(self.value)
         if props := self.props_to_html():
             props = ' ' + props
         return (
             '<' + self.tag + props + '>' + 
-            self.value + 
+            str(self.value) + 
             '</' + self.tag + '>'
         )
     

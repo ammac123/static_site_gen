@@ -4,6 +4,7 @@ from markdown_blocks import (
     markdown_to_blocks, 
     block_to_block_type,
     markdown_to_html_node,
+    extract_title,
 )
 
 class TestMarkdownToBlocks(unittest.TestCase):
@@ -173,15 +174,24 @@ the **same** even with inline stuff
         )
 
     def test_unordered_list_with_inline(self):
+        self.maxDiff = None
         md = """- item with **bold**
 - item with _italic_
 - item with `code`
+- [item with a link](/item/link)
+- ![alttext with an image](/item/image.png)
 """
         node = markdown_to_html_node(md)
         html = node.to_html()
-        self.assertEqual(
+        self.assertMultiLineEqual(
             html,
-            "<div><ul><li>item with <b>bold</b></li><li>item with <i>italic</i></li><li>item with <code>code</code></li></ul></div>",
+            """<div><ul>""" + 
+            """<li>item with <b>bold</b></li>""" +
+            """<li>item with <i>italic</i></li>""" + 
+            """<li>item with <code>code</code></li>""" + 
+            """<li><a href="/item/link">item with a link</a></li>""" + 
+            """<li><img src="/item/image.png" alt="alttext with an image"></img></li>""" + 
+            """</ul></div>""",
         )
 
     def test_ordered_list(self):
@@ -230,3 +240,39 @@ A paragraph with **bold**.
             "<ol><li>ordered one</li><li>ordered two</li></ol>"
             "</div>",
         )
+
+class TestExtractMarkdownHeading(unittest.TestCase):
+    def test_extract_title(self):
+        actual = extract_title("# Hello title ")
+        self.assertEqual(
+            actual,
+            "Hello title"
+        )
+    
+    def test_multiple_headings(self):
+        markdown = """
+### This is not the heading we want
+
+## Neither is this
+
+# Correct Title
+
+# Incorrect Title
+"""
+        actual = extract_title(markdown)
+        self.assertEqual(
+            actual,
+            "Correct Title"
+        )
+    
+    def test_no_heading(self):
+        markdown = """
+### Not title heading
+
+#Misformatted title heading too
+
+## Also incorrect
+
+What is this doing here
+"""
+        self.assertRaises(ValueError, extract_title, markdown)
