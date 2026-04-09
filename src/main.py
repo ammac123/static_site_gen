@@ -4,7 +4,7 @@ import sys
 from copystatic import copy_directory_src_to_dest
 from generatepage import generate_page_recursive
 
-basepath = sys.argv[1] or "/"
+basepath = sys.argv[1] if len(sys.argv) > 1 else "/"
 dir_path_static = "static"
 dir_path_public = "docs"
 dir_path_content = "content"
