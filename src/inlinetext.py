@@ -2,7 +2,7 @@ import re
 from typing import List
 from textnode import TextNode, TextType
 
-def split_nodes_deliminiter(old_nodes: List[TextNode], delimiter: str, text_type: TextType):
+def split_nodes_deliminiter(old_nodes: List[TextNode], delimiter: str, text_type: TextType) -> List[TextNode]:
     new_nodes = []
     for node in old_nodes:
         if node.text_type is not TextType.TEXT:
@@ -43,7 +43,7 @@ def split_nodes_image(old_nodes: List[TextNode]):
     return new_nodes
 
 
-def split_nodes_link(old_nodes: List[TextNode]):
+def split_nodes_link(old_nodes: List[TextNode]) -> List[TextNode]:
     new_nodes = []
     for node in old_nodes:
         if node.text_type is not TextType.TEXT:
